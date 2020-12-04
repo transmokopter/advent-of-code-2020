@@ -34,6 +34,6 @@ Get-Content C:\Temp\input1.txt |
             break
         }
     }
-$s.add($val,$val)
+    $s.add($val,$val)
 }
 
