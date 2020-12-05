@@ -70,7 +70,9 @@ Function Load-Passports{
         [string]
         $Path,
         [string[]]
-        $RequiredKeys
+        $RequiredKeys,
+        [switch]
+        $IgnoreKeyValues
     )
     $passports = @{ }
     $currentPassportNumber = 0
@@ -87,7 +89,7 @@ Function Load-Passports{
             $rowFields | ForEach-Object{
                 Write-Verbose $PSItem 
                 $keyValue = $PSItem.Split(":")
-                if( Get-IsValidKeyValue -Key $KeyValue[0] -Value $KeyValue[1]){
+                if( $IgnoreKeyValues -or (Get-IsValidKeyValue -Key $KeyValue[0] -Value $KeyValue[1])){
                     $currentPassport.Add($keyValue[0],$keyValue[1])
                 }
             }
@@ -104,9 +106,9 @@ Function Load-Passports{
 
 [string[]]$allRequiredKeys = "byr","iyr","eyr","hgt","hcl","ecl","pid"
 
-$allPassports = Load-Passports -Path C:\temp\input4.txt -RequiredKeys $allRequiredKeys
+$validPassportCount = (Load-Passports -Path C:\temp\input4.txt -RequiredKeys $allRequiredKeys -IgnoreKeyValues).Count 
+Write-Host "We have $validPassportCount valid passports for Excercise 1" -ForegroundColor Green 
 
-$validPassportCount = $allPassports.Values.Count
-
-Write-Host "We have $validPassportCount valid passports" -ForegroundColor Green 
+$validPassportCount = (Load-Passports -Path C:\temp\input4.txt -RequiredKeys $allRequiredKeys).Count 
+Write-Host "We have $validPassportCount valid passports for Excercise 2" -ForegroundColor Green 
 
